@@ -1,0 +1,31 @@
+{% extends "gestion/base.html" %}
+
+{% block fil_ariane %}
+  {{ block.super }}
+  <span class="separateur">›</span> Fonctions
+{% endblock %}
+
+{% block titre %}Fonctions{% endblock %}
+
+{% block contenu %}
+  <h1>Gestion des fonctions</h1>
+  <p><a href="{% url 'fonction_creer' %}">Créer une fonction</a></p>
+
+  {% if fonctions %}
+    <table>
+      <thead>
+        <tr><th>Intitulé du poste</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for fonction in fonctions %}
+          <tr>
+            <td>{{ fonction.intitule_poste }}</td>
+            <td><a href="{% url 'fonction_modifier' fonction.pk %}">Modifier</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Aucune fonction pour le moment.</p>
+  {% endif %}
+{% endblock %}

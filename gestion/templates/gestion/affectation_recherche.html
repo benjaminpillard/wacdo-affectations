@@ -1,0 +1,39 @@
+{% extends "gestion/base.html" %}
+
+{% block fil_ariane %}
+  {{ block.super }}
+  <span class="separateur">›</span> Recherche des affectations
+{% endblock %}
+
+{% block titre %}Recherche des affectations{% endblock %}
+
+{% block contenu %}
+  <h1>Recherche des affectations</h1>
+
+  <form method="get">
+    {{ formulaire.as_p }}
+    <button type="submit">Rechercher</button>
+    <a href="{% url 'affectation_recherche' %}">Réinitialiser</a>
+  </form>
+
+  {% if affectations %}
+    <table>
+      <thead>
+        <tr><th>Collaborateur</th><th>Restaurant</th><th>Poste</th><th>Début</th><th>Fin</th></tr>
+      </thead>
+      <tbody>
+        {% for affectation in affectations %}
+          <tr>
+            <td><a href="{% url 'collaborateur_detail' affectation.collaborateur.pk %}">{{ affectation.collaborateur }}</a></td>
+            <td><a href="{% url 'restaurant_detail' affectation.restaurant.pk %}">{{ affectation.restaurant }}</a></td>
+            <td>{{ affectation.poste }}</td>
+            <td>{{ affectation.debut|date:"d/m/Y" }}</td>
+            <td>{{ affectation.fin|date:"d/m/Y"|default:"En cours" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Aucune affectation trouvée.</p>
+  {% endif %}
+{% endblock %}

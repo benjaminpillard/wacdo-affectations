@@ -1,0 +1,19 @@
+{% extends "gestion/base.html" %}
+
+{% block fil_ariane %}
+  {{ block.super }}
+  <span class="separateur">›</span> <a href="{% url 'collaborateur_liste' %}">Collaborateurs</a>
+  <span class="separateur">›</span> Créer
+{% endblock %}
+
+{% block titre %}Créer un collaborateur{% endblock %}
+
+{% block contenu %}
+  <h1>Créer un collaborateur</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Enregistrer</button>
+    <a href="{% url 'collaborateur_liste' %}">Annuler</a>
+  </form>
+{% endblock %}

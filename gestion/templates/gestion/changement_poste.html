@@ -1,0 +1,22 @@
+{% extends "gestion/base.html" %}
+
+{% block fil_ariane %}
+  {{ block.super }}
+  <span class="separateur">›</span> <a href="{% url 'collaborateur_liste' %}">Collaborateurs</a>
+  <span class="separateur">›</span> <a href="{% url 'collaborateur_detail' affectation.collaborateur.pk %}">{{ affectation.collaborateur }}</a>
+  <span class="separateur">›</span> Changer de poste
+{% endblock %}
+
+{% block titre %}Changer de poste{% endblock %}
+
+{% block contenu %}
+  <h1>Changer de poste — {{ affectation.collaborateur }}</h1>
+  <p>Poste actuel : {{ affectation.poste }} à {{ affectation.restaurant }}, depuis le {{ affectation.debut|date:"d/m/Y" }}</p>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ formulaire.as_p }}
+    <button type="submit">Valider</button>
+    <a href="{% url 'collaborateur_detail' affectation.collaborateur.pk %}">Annuler</a>
+  </form>
+{% endblock %}

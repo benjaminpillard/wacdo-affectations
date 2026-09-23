@@ -1,0 +1,39 @@
+{% extends "gestion/base.html" %}
+
+{% block fil_ariane %}
+  {{ block.super }}
+  <span class="separateur">›</span> Restaurants
+{% endblock %}
+
+{% block titre %}Restaurants{% endblock %}
+
+{% block contenu %}
+  <h1>Gestion des restaurants</h1>
+  <p><a href="{% url 'restaurant_creer' %}">Créer un restaurant</a></p>
+
+  <form method="get">
+    {{ formulaire.as_p }}
+    <button type="submit">Rechercher</button>
+    <a href="{% url 'restaurant_liste' %}">Réinitialiser</a>
+  </form>
+
+  {% if restaurants %}
+    <table>
+      <thead>
+        <tr><th>Nom</th><th>Adresse</th><th>Code postal</th><th>Ville</th></tr>
+      </thead>
+      <tbody>
+        {% for restaurant in restaurants %}
+          <tr>
+            <td><a href="{% url 'restaurant_detail' restaurant.pk %}">{{ restaurant.nom }}</a></td>
+            <td>{{ restaurant.adresse }}</td>
+            <td>{{ restaurant.code_postal }}</td>
+            <td>{{ restaurant.ville }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Aucun restaurant trouvé.</p>
+  {% endif %}
+{% endblock %}

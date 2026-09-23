@@ -1,0 +1,41 @@
+{% extends "gestion/base.html" %}
+
+{% block fil_ariane %}
+  {{ block.super }}
+  <span class="separateur">›</span> Collaborateurs
+{% endblock %}
+
+{% block titre %}Collaborateurs{% endblock %}
+
+{% block contenu %}
+  <h1>Gestion des collaborateurs</h1>
+  <p>
+    <a href="{% url 'collaborateur_creer' %}">Créer un collaborateur</a> —
+    <a href="{% url 'collaborateur_non_affectes' %}">Collaborateurs non affectés</a>
+  </p>
+
+  <form method="get">
+    {{ formulaire.as_p }}
+    <button type="submit">Rechercher</button>
+    <a href="{% url 'collaborateur_liste' %}">Réinitialiser</a>
+  </form>
+
+  {% if collaborateurs %}
+    <table>
+      <thead>
+        <tr><th>Nom</th><th>Prénom</th><th>Email</th></tr>
+      </thead>
+      <tbody>
+        {% for collaborateur in collaborateurs %}
+          <tr>
+            <td><a href="{% url 'collaborateur_detail' collaborateur.pk %}">{{ collaborateur.last_name }}</a></td>
+            <td>{{ collaborateur.first_name }}</td>
+            <td>{{ collaborateur.email }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Aucun collaborateur trouvé.</p>
+  {% endif %}
+{% endblock %}

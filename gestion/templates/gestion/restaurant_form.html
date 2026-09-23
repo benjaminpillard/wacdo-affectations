@@ -1,0 +1,23 @@
+{% extends "gestion/base.html" %}
+
+{% block fil_ariane %}
+  {{ block.super }}
+  <span class="separateur">›</span> <a href="{% url 'restaurant_liste' %}">Restaurants</a>
+  <span class="separateur">›</span> {% if object %}Modifier{% else %}Créer{% endif %}
+{% endblock %}
+
+{% block titre %}{% if object %}Modifier{% else %}Créer{% endif %} un restaurant{% endblock %}
+
+{% block contenu %}
+  <h1>{% if object %}Modifier le restaurant{% else %}Créer un restaurant{% endif %}</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Enregistrer</button>
+    {% if object %}
+      <a href="{% url 'restaurant_detail' object.pk %}">Annuler</a>
+    {% else %}
+      <a href="{% url 'restaurant_liste' %}">Annuler</a>
+    {% endif %}
+  </form>
+{% endblock %}

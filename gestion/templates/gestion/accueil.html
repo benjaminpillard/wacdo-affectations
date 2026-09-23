@@ -1,0 +1,15 @@
+{% extends "gestion/base.html" %}
+
+{% block titre %}Menu principal{% endblock %}
+
+{% block contenu %}
+  <h1>Menu principal</h1>
+  <ul>
+    {% if user.administrateur %}
+        <li><a href="{% url 'restaurant_liste' %}">Gestion des restaurants</a></li>
+        <li><a href="{% url 'collaborateur_liste' %}">Gestion des collaborateurs</a></li>
+        <li><a href="{% url 'fonction_liste' %}">Gestion des fonctions</a></li>
+    {% endif %}
+        <li><a href="{% url 'affectation_recherche' %}">Recherche des affectations</a></li>
+  </ul>
+{% endblock %}

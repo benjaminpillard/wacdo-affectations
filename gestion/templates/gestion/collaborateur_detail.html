@@ -1,0 +1,64 @@
+{% extends "gestion/base.html" %}
+
+{% block fil_ariane %}
+  {{ block.super }}
+  <span class="separateur">›</span> <a href="{% url 'collaborateur_liste' %}">Collaborateurs</a>
+  <span class="separateur">›</span> {{ collaborateur }}
+{% endblock %}
+
+{% block titre %}{{ collaborateur }}{% endblock %}
+
+{% block contenu %}
+  <p><a href="{% url 'collaborateur_liste' %}">← Retour à la liste</a></p>
+
+  <h1>{{ collaborateur }}</h1>
+  <p>{{ collaborateur.email }} — Embauché le {{ collaborateur.date_premiere_embauche|date:"d/m/Y" }}</p>
+
+  <h2>Affectations en cours</h2>
+  <form method="get">
+    {{ formulaire.as_p }}
+    <button type="submit">Filtrer</button>
+    <a href="{% url 'collaborateur_detail' collaborateur.pk %}">Réinitialiser</a>
+  </form>
+
+  {% if en_poste %}
+    <table>
+      <thead>
+        <tr><th>Restaurant</th><th>Poste</th><th>Début</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for affectation in en_poste %}
+          <tr>
+            <td>{{ affectation.restaurant }}</td>
+            <td>{{ affectation.poste }}</td>
+            <td>{{ affectation.debut|date:"d/m/Y" }}</td>
+            <td><a href="{% url 'affectation_changer_poste' affectation.pk %}">Changer de poste</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Aucune affectation en cours.</p>
+  {% endif %}
+
+  <h2>Historique des affectations</h2>
+  {% if historique %}
+    <table>
+      <thead>
+        <tr><th>Restaurant</th><th>Poste</th><th>Début</th><th>Fin</th></tr>
+      </thead>
+      <tbody>
+        {% for affectation in historique %}
+          <tr>
+            <td>{{ affectation.restaurant }}</td>
+            <td>{{ affectation.poste }}</td>
+            <td>{{ affectation.debut|date:"d/m/Y" }}</td>
+            <td>{{ affectation.fin|date:"d/m/Y"|default:"En cours" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Aucune affectation pour ce collaborateur.</p>
+  {% endif %}
+{% endblock %}

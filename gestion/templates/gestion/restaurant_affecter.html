@@ -1,0 +1,20 @@
+{% extends "gestion/base.html" %}
+
+{% block fil_ariane %}
+  {{ block.super }}
+  <span class="separateur">›</span> <a href="{% url 'restaurant_liste' %}">Restaurants</a>
+  <span class="separateur">›</span> <a href="{% url 'restaurant_detail' restaurant.pk %}">{{ restaurant.nom }}</a>
+  <span class="separateur">›</span> Affecter
+{% endblock %}
+
+{% block titre %}Affecter un collaborateur{% endblock %}
+
+{% block contenu %}
+  <h1>Affecter un collaborateur — {{ restaurant.nom }}</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Affecter</button>
+    <a href="{% url 'restaurant_detail' restaurant.pk %}">Annuler</a>
+  </form>
+{% endblock %}

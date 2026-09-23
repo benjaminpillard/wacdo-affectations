@@ -1,0 +1,19 @@
+{% extends "gestion/base.html" %}
+
+{% block fil_ariane %}
+  {{ block.super }}
+  <span class="separateur">›</span> <a href="{% url 'fonction_liste' %}">Fonctions</a>
+  <span class="separateur">›</span> {% if object %}Modifier{% else %}Créer{% endif %}
+{% endblock %}
+
+{% block titre %}{% if object %}Modifier{% else %}Créer{% endif %} une fonction{% endblock %}
+
+{% block contenu %}
+  <h1>{% if object %}Modifier la fonction{% else %}Créer une fonction{% endif %}</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Enregistrer</button>
+    <a href="{% url 'fonction_liste' %}">Annuler</a>
+  </form>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "gestion/base.html" %}
+
+{% block fil_ariane %}
+  {{ block.super }}
+  <span class="separateur">›</span> <a href="{% url 'restaurant_liste' %}">Restaurants</a>
+  <span class="separateur">›</span> {{ restaurant.nom }}
+{% endblock %}
+
+{% block titre %}{{ restaurant.nom }}{% endblock %}
+
+{% block contenu %}
+  <p><a href="{% url 'restaurant_liste' %}">← Retour à la liste</a></p>
+
+  <h1>{{ restaurant.nom }}</h1>
+  <p>{{ restaurant.adresse }}, {{ restaurant.code_postal }} {{ restaurant.ville }}</p>
+  <p><a href="{% url 'restaurant_modifier' restaurant.pk %}">Modifier</a></p>
+
+  <h2>Collaborateurs en poste</h2>
+  <p><a href="{% url 'restaurant_affecter' restaurant.pk %}">Affecter un collaborateur</a></p>
+  <form method="get">
+    {{ formulaire.as_p }}
+    <button type="submit">Filtrer</button>
+    <a href="{% url 'restaurant_detail' restaurant.pk %}">Réinitialiser</a>
+  </form>
+
+  {% if en_poste %}
+    <table>
+      <thead>
+        <tr><th>Collaborateur</th><th>Poste</th><th>Début</th></tr>
+      </thead>
+      <tbody>
+        {% for affectation in en_poste %}
+          <tr>
+            <td>{{ affectation.collaborateur }}</td>
+            <td>{{ affectation.poste }}</td>
+            <td>{{ affectation.debut|date:"d/m/Y" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Aucun collaborateur en poste.</p>
+  {% endif %}
+
+  <h2>Historique des affectations</h2>
+  {% if historique %}
+    <table>
+      <thead>
+        <tr><th>Collaborateur</th><th>Poste</th><th>Début</th><th>Fin</th></tr>
+      </thead>
+      <tbody>
+        {% for affectation in historique %}
+          <tr>
+            <td>{{ affectation.collaborateur }}</td>
+            <td>{{ affectation.poste }}</td>
+            <td>{{ affectation.debut|date:"d/m/Y" }}</td>
+            <td>{{ affectation.fin|date:"d/m/Y"|default:"En cours" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Aucune affectation pour ce restaurant.</p>
+  {% endif %}
+{% endblock %}
