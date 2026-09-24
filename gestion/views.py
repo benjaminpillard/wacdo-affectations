@@ -7,6 +7,9 @@ from django.views import View
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from django.core.cache import cache
 
+from django.core.exceptions import PermissionDenied
+from django.db.models.deletion import ProtectedError
+
 from .forms import (
     AffectationFiltreForm,
     AffectationForm,
@@ -304,3 +307,47 @@ class AffectationRechercheView(AdministrateurRequisMixin, ListView):
         contexte = super().get_context_data(**kwargs)
         contexte["formulaire"] = self.formulaire
         return contexte
+
+@login_required
+def restaurant_supprimer(request, pk):
+    if not request.user.administrateur:
+        raise PermissionDenied
+    restaurant = get_object_or_404(Restaurant, pk=pk)
+    if request.method == "POST":
+        try:
+            restaurant.delete()
+            messages.success(request, "Le restaurant a été supprimé.")
+        except ProtectedError:
+            messages.error(
+                request,
+                "Impossible de supprimer ce restaurant : des affectations lui sont encore liées.",
+            )
+    return redirect("restaurant_liste")
+
+
+@login_required
+def collaborateur_supprimer(request, pk):
+    if not request.user.administrateur:
+        raise PermissionDenied
+    collaborateur = get_object_or_404(Collaborateur, pk=pk)
+    if request.method == "POST":
+        try:
+            collaborateur.delete()
+            messages.success(request, "Le collaborateur a été supprimé.")
+        except ProtectedError:
+            messages.error(
+                request,
+                "Impossible de supprimer ce collaborateur : des affectations lui sont encore liées.",
+            )
+    return redirect("collaborateur_liste")
+
+
+@login_required
+def affectation_supprimer(request, pk):
+    if not request.user.administrateur:
+        raise PermissionDenied
+    affectation = get_object_or_404(Affectation, pk=pk)
+    if request.method == "POST":
+        affectation.delete()
+        messages.success(request, "L'affectation a été supprimée.")
+    return redirect("affectation_recherche")

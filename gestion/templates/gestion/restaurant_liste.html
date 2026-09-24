@@ -18,9 +18,9 @@
   </form>
 
   {% if restaurants %}
-    <table>
+        <table>
       <thead>
-        <tr><th>Nom</th><th>Adresse</th><th>Code postal</th><th>Ville</th></tr>
+        <tr><th>Nom</th><th>Adresse</th><th>Code postal</th><th>Ville</th><th></th></tr>
       </thead>
       <tbody>
         {% for restaurant in restaurants %}
@@ -29,6 +29,12 @@
             <td>{{ restaurant.adresse }}</td>
             <td>{{ restaurant.code_postal }}</td>
             <td>{{ restaurant.ville }}</td>
+            <td>
+              <form class="form-supprimer" method="post" action="{% url 'restaurant_supprimer' restaurant.pk %}" onsubmit="return confirm('Supprimer ce restaurant ?');">
+                {% csrf_token %}
+                <button type="submit" class="bouton-supprimer" title="Supprimer">🗑️</button>
+              </form>
+            </td>
           </tr>
         {% endfor %}
       </tbody>

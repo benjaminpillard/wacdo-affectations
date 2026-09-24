@@ -19,7 +19,7 @@
   {% if affectations %}
     <table>
       <thead>
-        <tr><th>Collaborateur</th><th>Restaurant</th><th>Poste</th><th>Début</th><th>Fin</th></tr>
+        <tr><th>Collaborateur</th><th>Restaurant</th><th>Poste</th><th>Début</th><th>Fin</th><th></th></tr>
       </thead>
       <tbody>
         {% for affectation in affectations %}
@@ -29,6 +29,12 @@
             <td>{{ affectation.poste }}</td>
             <td>{{ affectation.debut|date:"d/m/Y" }}</td>
             <td>{{ affectation.fin|date:"d/m/Y"|default:"En cours" }}</td>
+            <td>
+              <form class="form-supprimer" method="post" action="{% url 'affectation_supprimer' affectation.pk %}" onsubmit="return confirm('Supprimer cette affectation ?');">
+                {% csrf_token %}
+                <button type="submit" class="bouton-supprimer" title="Supprimer">🗑️</button>
+              </form>
+            </td>
           </tr>
         {% endfor %}
       </tbody>

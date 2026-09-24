@@ -21,9 +21,9 @@
   </form>
 
   {% if collaborateurs %}
-    <table>
+<table>
       <thead>
-        <tr><th>Nom</th><th>Prénom</th><th>Email</th></tr>
+        <tr><th>Nom</th><th>Prénom</th><th>Email</th><th></th></tr>
       </thead>
       <tbody>
         {% for collaborateur in collaborateurs %}
@@ -31,6 +31,12 @@
             <td><a href="{% url 'collaborateur_detail' collaborateur.pk %}">{{ collaborateur.last_name }}</a></td>
             <td>{{ collaborateur.first_name }}</td>
             <td>{{ collaborateur.email }}</td>
+            <td>
+              <form class="form-supprimer" method="post" action="{% url 'collaborateur_supprimer' collaborateur.pk %}" onsubmit="return confirm('Supprimer ce collaborateur ?');">
+                {% csrf_token %}
+                <button type="submit" class="bouton-supprimer" title="Supprimer">🗑️</button>
+              </form>
+            </td>
           </tr>
         {% endfor %}
       </tbody>

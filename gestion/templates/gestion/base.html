@@ -5,110 +5,320 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block titre %}Wacdo{% endblock %}</title>
   <style>
-    body {
-      font-family: system-ui, sans-serif;
-      margin: 0;
-      color: #222;
-      background: #f7f7f7;
+    :root {
+      --couleur-principale: #dc2626;
+      --couleur-principale-fonce: #991b1b;
+      --couleur-texte: #1f2937;
+      --couleur-fond: #f3f4f6;
+      --couleur-bordure: #e5e7eb;
     }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      margin: 0;
+      color: var(--couleur-texte);
+      background: var(--couleur-fond);
+      line-height: 1.5;
+    }
+
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #1e293b;
+      background: linear-gradient(135deg, #1f2937, #111827);
       color: white;
-      padding: 0.75rem 1.5rem;
+      padding: 0.6rem 2rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
+
     header a {
       color: white;
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: 0.02em;
     }
-    header form {
-      display: inline;
-      margin-left: 1rem;
+
+    header .droite {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
-    header button {
-      background: none;
-      border: 1px solid white;
-      color: white;
-      padding: 0.3rem 0.7rem;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .fil-ariane {
-      background: #e2e8f0;
-      padding: 0.5rem 1.5rem;
+
+    header span {
+      opacity: 0.9;
       font-size: 0.9rem;
     }
-    .fil-ariane a {
-      color: #1e293b;
-      text-decoration: none;
+
+    header form {
+      margin: 0;
+      background: none;
+      padding: 0;
+      box-shadow: none;
     }
+
+    header button {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      color: white;
+      padding: 0.4rem 0.9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: background 0.15s ease;
+    }
+
+    header button:hover {
+      background: rgba(255, 255, 255, 0.28);
+    }
+
+    .fil-ariane {
+      background: white;
+      padding: 0.5rem 2rem;
+      font-size: 0.88rem;
+      border-bottom: 1px solid var(--couleur-bordure);
+    }
+
+    .fil-ariane a {
+      color: var(--couleur-principale-fonce);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
     .fil-ariane a:hover {
       text-decoration: underline;
     }
+
     .fil-ariane span.separateur {
-      margin: 0 0.4rem;
-      color: #64748b;
+      margin: 0 0.5rem;
+      color: #9ca3af;
     }
+
     main {
-      max-width: 900px;
-      margin: 1.5rem auto;
-      padding: 0 1rem;
+      max-width: 960px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
     }
-    h1, h2 {
-      color: #1e293b;
+
+    h1 {
+      color: var(--couleur-texte);
+      font-size: 1.6rem;
+      margin-bottom: 0.3rem;
+      border-bottom: 3px solid var(--couleur-principale);
+      padding-bottom: 0.5rem;
     }
+
+    h2 {
+      color: var(--couleur-texte);
+      font-size: 1.2rem;
+      margin-top: 2rem;
+    }
+
+    .menu-principal {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      max-width: 420px;
+    }
+
+    .menu-principal a {
+      display: block;
+      background: white;
+      padding: 0.9rem 1.2rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      color: var(--couleur-texte);
+      text-decoration: none;
+      font-weight: 600;
+      border-left: 4px solid var(--couleur-principale);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .menu-principal a:hover {
+      transform: translateX(4px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
       background: white;
       margin: 1rem 0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
+
     th, td {
       text-align: left;
-      padding: 0.5rem 0.75rem;
-      border-bottom: 1px solid #ddd;
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid var(--couleur-bordure);
     }
+
     th {
-      background: #e2e8f0;
+      background: #111827;
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
     }
+
+    tbody tr:hover {
+      background: #fef2f2;
+    }
+
+    td a {
+      color: var(--couleur-principale-fonce);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    td a:hover {
+      text-decoration: underline;
+    }
+
+    form {
+      background: white;
+      padding: 1.2rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      margin: 1rem 0;
+    }
+
     form p {
-      margin: 0.5rem 0;
+      margin: 0.7rem 0;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
+
     label {
       display: inline-block;
-      min-width: 140px;
+      min-width: 160px;
+      font-weight: 500;
+      color: #374151;
     }
+
     input, select {
-      padding: 0.3rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      padding: 0.45rem 0.6rem;
+      border: 1px solid var(--couleur-bordure);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      flex: 1;
+      min-width: 180px;
     }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--couleur-principale);
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+    }
+
     button, a.bouton {
-      background: #1e293b;
+      background: var(--couleur-principale);
       color: white;
       border: none;
-      padding: 0.4rem 1rem;
-      border-radius: 4px;
+      padding: 0.55rem 1.3rem;
+      border-radius: 6px;
       cursor: pointer;
       text-decoration: none;
       display: inline-block;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: background 0.15s ease;
     }
-    ul li {
-      margin: 0.3rem 0;
+
+    button:hover, a.bouton:hover {
+      background: var(--couleur-principale-fonce);
     }
+
+    form a {
+      color: var(--couleur-principale-fonce);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--couleur-principale);
+      border-radius: 6px;
+      display: inline-block;
+      margin-left: 0.4rem;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    form a:hover {
+      background: var(--couleur-principale);
+      color: white;
+    }
+
+    main > p > a {
+      color: var(--couleur-principale-fonce);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    main > p > a:hover {
+      text-decoration: underline;
+    }
+
+    form.form-supprimer {
+      background: none;
+      padding: 0;
+      box-shadow: none;
+      margin: 0;
+      display: inline;
+    }
+
+    .bouton-supprimer {
+      background: none;
+      border: none;
+      color: var(--couleur-principale);
+      cursor: pointer;
+      font-size: 1.05rem;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      transition: background 0.15s ease;
+    }
+
+    .bouton-supprimer:hover {
+      background: #fee2e2;
+    }
+
     .messages {
       list-style: none;
       padding: 0;
+      margin-bottom: 1.5rem;
     }
+
     .messages li {
       background: #dcfce7;
       color: #166534;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      margin-bottom: 1rem;
+      padding: 0.75rem 1.1rem;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      border-left: 4px solid #16a34a;
+      font-weight: 500;
+    }
+
+    .messages li.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border-left-color: #dc2626;
+    }
+
+    ul.errorlist {
+      color: #dc2626;
+      font-size: 0.85rem;
+      list-style: none;
+      padding: 0;
+      margin: 0.2rem 0 0;
     }
   </style>
 </head>
@@ -117,24 +327,26 @@
   <header>
     <a href="{% url 'accueil' %}">Wacdo – Affectations</a>
     {% if user.is_authenticated %}
-      <span>{{ user.first_name }} {{ user.last_name }}</span>
-      <form method="post" action="{% url 'deconnexion' %}">
-        {% csrf_token %}
-        <button type="submit">Se déconnecter</button>
-      </form>
+      <div class="droite">
+        <span>{{ user.first_name }} {{ user.last_name }}</span>
+        <form method="post" action="{% url 'deconnexion' %}">
+          {% csrf_token %}
+          <button type="submit">Se déconnecter</button>
+        </form>
+      </div>
     {% endif %}
   </header>
 
-  {% block fil_ariane %}
-    <nav class="fil-ariane">
+  <nav class="fil-ariane">
+    {% block fil_ariane %}
       <a href="{% url 'accueil' %}">Accueil</a>
-    </nav>
-  {% endblock %}
+    {% endblock %}
+  </nav>
 
   {% if messages %}
     <ul class="messages">
       {% for message in messages %}
-        <li>{{ message }}</li>
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
       {% endfor %}
     </ul>
   {% endif %}

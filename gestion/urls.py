@@ -28,4 +28,7 @@ urlpatterns = [
     path("collaborateurs/<int:pk>/", views.CollaborateurDetailView.as_view(), name="collaborateur_detail"),
     path("affectations/<int:pk>/changer-poste/", views.AffectationChangerPosteView.as_view(), name="affectation_changer_poste"),
     path("affectations/", views.AffectationRechercheView.as_view(), name="affectation_recherche"),
+    path("restaurants/<int:pk>/supprimer/", views.restaurant_supprimer, name="restaurant_supprimer"),
+    path("collaborateurs/<int:pk>/supprimer/", views.collaborateur_supprimer, name="collaborateur_supprimer"),
+    path("affectations/<int:pk>/supprimer/", views.affectation_supprimer, name="affectation_supprimer"),
 ]
