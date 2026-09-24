@@ -4,6 +4,13 @@
 
 {% block contenu %}
   <h1>Menu principal</h1>
+    {% if statistiques %}
+    <ul>
+      <li>{{ statistiques.nombre_restaurants }} restaurant(s)</li>
+      <li>{{ statistiques.nombre_collaborateurs }} collaborateur(s)</li>
+      <li>{{ statistiques.nombre_affectations_en_cours }} affectation(s) en cours</li>
+    </ul>
+  {% endif %}
   <ul>
     {% if user.administrateur %}
         <li><a href="{% url 'restaurant_liste' %}">Gestion des restaurants</a></li>

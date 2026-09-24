@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.core.cache import cache
 
 from .forms import (
     AffectationFiltreForm,
@@ -21,9 +22,25 @@ from .mixins import AdministrateurRequisMixin
 from .models import Affectation, Collaborateur, Fonction, Restaurant
 
 
+CLE_CACHE_STATISTIQUES = "gestion:statistiques_accueil"
+
+
+def calculer_statistiques():
+    return {
+        "nombre_restaurants": Restaurant.objects.count(),
+        "nombre_collaborateurs": Collaborateur.objects.count(),
+        "nombre_affectations_en_cours": Affectation.objects.filter(fin__isnull=True).count(),
+    }
+
+
 @login_required
 def accueil(request):
-    return render(request, "gestion/accueil.html")
+    contexte = {}
+    if request.user.administrateur:
+        contexte["statistiques"] = cache.get_or_set(
+            CLE_CACHE_STATISTIQUES, calculer_statistiques, timeout=60
+        )
+    return render(request, "gestion/accueil.html", contexte)
 
 
 class RestaurantListView(AdministrateurRequisMixin, ListView):
