@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views import View
@@ -203,9 +203,8 @@ class CollaborateurCreateView(AdministrateurRequisMixin, CreateView):
     success_url = reverse_lazy("collaborateur_liste")
 
     def form_valid(self, form):
-        self.object = form.save()
         messages.success(self.request, "Le collaborateur a été créé.")
-        return super(CreateView, self).form_valid(form)
+        return super().form_valid(form)
 
 
 class CollaborateurNonAffectesView(AdministrateurRequisMixin, ListView):
@@ -213,9 +212,12 @@ class CollaborateurNonAffectesView(AdministrateurRequisMixin, ListView):
     context_object_name = "collaborateurs"
 
     def get_queryset(self):
-        return Collaborateur.objects.exclude(
-            affectations__fin__isnull=True
-        ).order_by("last_name", "first_name")
+        # Sous-requête : un exclude() direct sur la relation inverse exclurait
+        # aussi les collaborateurs sans aucune affectation (LEFT JOIN -> fin NULL).
+        en_poste = Affectation.objects.filter(fin__isnull=True).values("collaborateur")
+        return Collaborateur.objects.exclude(pk__in=en_poste).order_by(
+            "last_name", "first_name"
+        )
 
 class CollaborateurDetailView(AdministrateurRequisMixin, DetailView):
     model = Collaborateur
@@ -258,21 +260,30 @@ class AffectationChangerPosteView(AdministrateurRequisMixin, View):
         if formulaire.is_valid():
             donnees = formulaire.cleaned_data
 
-            affectation.fin = donnees["fin_poste_actuel"]
-            affectation.full_clean()
-            affectation.save()
+            if donnees["fin_poste_actuel"] < affectation.debut:
+                formulaire.add_error(
+                    "fin_poste_actuel",
+                    "La date de fin ne peut pas précéder le début du poste actuel "
+                    f"({affectation.debut:%d/%m/%Y}).",
+                )
+            else:
+                # Les deux écritures réussissent ensemble ou pas du tout.
+                with transaction.atomic():
+                    affectation.fin = donnees["fin_poste_actuel"]
+                    affectation.full_clean()
+                    affectation.save()
 
-            nouvelle_affectation = Affectation(
-                collaborateur=affectation.collaborateur,
-                restaurant=donnees["nouveau_restaurant"],
-                poste=donnees["nouveau_poste"],
-                debut=donnees["nouveau_debut"],
-            )
-            nouvelle_affectation.full_clean()
-            nouvelle_affectation.save()
+                    nouvelle_affectation = Affectation(
+                        collaborateur=affectation.collaborateur,
+                        restaurant=donnees["nouveau_restaurant"],
+                        poste=donnees["nouveau_poste"],
+                        debut=donnees["nouveau_debut"],
+                    )
+                    nouvelle_affectation.full_clean()
+                    nouvelle_affectation.save()
 
-            messages.success(request, "Le collaborateur a été affecté à son nouveau poste.")
-            return redirect("collaborateur_detail", pk=affectation.collaborateur.pk)
+                messages.success(request, "Le collaborateur a été affecté à son nouveau poste.")
+                return redirect("collaborateur_detail", pk=affectation.collaborateur.pk)
 
         return render(
             request,

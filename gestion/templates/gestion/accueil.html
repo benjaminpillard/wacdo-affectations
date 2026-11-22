@@ -11,12 +11,14 @@
       <li>{{ statistiques.nombre_affectations_en_cours }} affectation(s) en cours</li>
     </ul>
   {% endif %}
-  <ul>
-    {% if user.administrateur %}
-        <li><a href="{% url 'restaurant_liste' %}">Gestion des restaurants</a></li>
-        <li><a href="{% url 'collaborateur_liste' %}">Gestion des collaborateurs</a></li>
-        <li><a href="{% url 'fonction_liste' %}">Gestion des fonctions</a></li>
-    {% endif %}
-        <li><a href="{% url 'affectation_recherche' %}">Recherche des affectations</a></li>
-  </ul>
+  {% if user.administrateur %}
+    <ul class="menu-principal">
+      <li><a href="{% url 'restaurant_liste' %}">Gestion des restaurants</a></li>
+      <li><a href="{% url 'collaborateur_liste' %}">Gestion des collaborateurs</a></li>
+      <li><a href="{% url 'fonction_liste' %}">Gestion des fonctions</a></li>
+      <li><a href="{% url 'affectation_recherche' %}">Recherche des affectations</a></li>
+    </ul>
+  {% else %}
+    <p>Les fonctionnalités de gestion sont réservées aux administrateurs.</p>
+  {% endif %}
 {% endblock %}

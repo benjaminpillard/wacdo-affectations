@@ -92,7 +92,7 @@ class Affectation(models.Model):
     def clean(self):    
         if self.debut and self.fin and self.fin < self.debut:
             raise ValidationError(
-                {"fin":"La date de fin ne paut pas précéder la date de début."}
+                {"fin":"La date de fin ne peut pas précéder la date de début."}
             )
 
     def __str__(self) -> str:

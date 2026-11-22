@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.password_validation import validate_password
 
 from .models import Affectation, Collaborateur, Fonction, Restaurant
 
@@ -55,9 +56,14 @@ class FonctionForm(forms.ModelForm):
 
 
 class CollaborateurForm(forms.ModelForm):
-    mot_de_passe = forms.CharField(label="Mot de passe", widget=forms.PasswordInput)
+    mot_de_passe = forms.CharField(
+        label="Mot de passe",
+        widget=forms.PasswordInput,
+        required=False,
+        help_text="Obligatoire pour un administrateur.",
+    )
     mot_de_passe_confirmation = forms.CharField(
-        label="Confirmation du mot de passe", widget=forms.PasswordInput
+        label="Confirmation du mot de passe", widget=forms.PasswordInput, required=False
     )
 
     class Meta:
@@ -82,19 +88,32 @@ class CollaborateurForm(forms.ModelForm):
 
     def clean(self):
         donnees = super().clean()
-        if donnees.get("mot_de_passe") != donnees.get("mot_de_passe_confirmation"):
+        mot_de_passe = donnees.get("mot_de_passe")
+        if mot_de_passe != donnees.get("mot_de_passe_confirmation"):
             raise forms.ValidationError("Les deux mots de passe ne correspondent pas.")
+        if donnees.get("administrateur"):
+            if not mot_de_passe:
+                self.add_error(
+                    "mot_de_passe", "Un administrateur doit avoir un mot de passe."
+                )
+            else:
+                try:
+                    validate_password(mot_de_passe)
+                except forms.ValidationError as erreur:
+                    self.add_error("mot_de_passe", erreur)
         return donnees
 
     def save(self, commit=True):
-        collaborateur = Collaborateur.objects.create_user(
-            email=self.cleaned_data["email"],
-            password=self.cleaned_data["mot_de_passe"],
-            first_name=self.cleaned_data["first_name"],
-            last_name=self.cleaned_data["last_name"],
-            date_premiere_embauche=self.cleaned_data["date_premiere_embauche"],
-            administrateur=self.cleaned_data["administrateur"],
-        )
+        # Mot de passe haché (PBKDF2) pour un administrateur,
+        # inutilisable (connexion impossible) pour un collaborateur standard.
+        collaborateur = super().save(commit=False)
+        collaborateur.email = Collaborateur.objects.normalize_email(collaborateur.email)
+        if collaborateur.administrateur:
+            collaborateur.set_password(self.cleaned_data["mot_de_passe"])
+        else:
+            collaborateur.set_unusable_password()
+        if commit:
+            collaborateur.save()
         return collaborateur
 
 
